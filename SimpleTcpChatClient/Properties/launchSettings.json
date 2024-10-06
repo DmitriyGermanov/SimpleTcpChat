@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SimpleTcpChatClient": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
