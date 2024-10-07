@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Loader;
 using System.Text;
 
 namespace SimpleTcpChat
@@ -7,21 +8,24 @@ namespace SimpleTcpChat
     internal class Program
     {
         private static readonly ClientManager _clientManager = new();
-        static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var cts = new CancellationTokenSource();
+
+            AssemblyLoadContext.Default.Unloading += ctx =>
+            {
+                Console.WriteLine("Получен сигнал завершения.");
+                cts.Cancel();
+            };
+
 
             IPEndPoint localIP = new(IPAddress.Any, 6577);
 
             var listenTask = ListenForClientsAsync(localIP, cts.Token);
 
-            Console.WriteLine("Нажмите любую клавишу для завершения...");
-            Console.ReadKey();
+            Console.WriteLine("Сервер запущен. Нажмите Ctrl+C для завершения...");
 
-            cts.Cancel();
-            Console.WriteLine("Завершаем сервер...");
-
-            await listenTask;
+            listenTask.Wait();
 
             Console.WriteLine("Сервер завершил работу.");
         }
@@ -92,6 +96,7 @@ namespace SimpleTcpChat
                             if (!client.Key.Equals(clientName))
                             {
                                 await SendMessageToClientAsync(client.Value, $"{clientName}: {message}");
+                                await SendMessageToClientAsync(client.Value, "Введите сообщение:");
                             }
                         }
                     }

@@ -6,7 +6,7 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        IPEndPoint iPEndPoint = new(IPAddress.Parse("127.0.0.1"), 6577);
+        IPEndPoint iPEndPoint = new(IPAddress.Parse("85.208.87.46"), 6577);
 
         using TcpClient client = new();
 
@@ -83,7 +83,7 @@ class Program
 
     async static Task SendMessageToServerAsync(TcpClient client, String message, CancellationToken cts)
     {
-        var buffer = Encoding.UTF8.GetBytes(message + "\n");
+        var buffer = Encoding.UTF8.GetBytes(message);
         await client.Client.SendAsync(buffer, SocketFlags.None, cts);
     }
 
